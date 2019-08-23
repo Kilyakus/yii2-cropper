@@ -1,0 +1,20 @@
+{
+    "name": "kilyakus/yii2-cutter",
+    "type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Edited: Kilyakus",
+            "email": "aleksandr.kilyakov@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "kilyakus/yii2-toastr": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "kilyakus\\cutter\\": ""
+        }
+    }
+}
