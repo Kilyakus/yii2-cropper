@@ -100,7 +100,7 @@ class Cutter extends \yii\widgets\InputWidget
 
         echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'preview-container']);
 
-        echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter','DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'position-absolute btn-cutter']);
+        echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'position-absolute btn-cutter']);
 
         echo Html::img($this->model->{$this->attribute}, [
             'class' => 'preview-image img-responsive img-rounded',
@@ -208,7 +208,7 @@ class Cutter extends \yii\widgets\InputWidget
                 // if(!$(this).attr('name') &&  !== -1) {
                 if($(this).attr('name') && $(this).attr('name').indexOf('-remove') !== -1){
                     setTimeout(function(){
-                        notify.success('" . Yii::t('easyii','Photo deleted') . "');
+                        notify.success('" . Yii::t('kilyakus/cutter/cutter', 'DELETED') . "');
                     },0);
                 }else{
                     setTimeout(function(){
@@ -255,7 +255,7 @@ class Cutter extends \yii\widgets\InputWidget
         Yii::$app->i18n->translations['kilyakus/cutter/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
-            'basePath' => '@vendor/mitrm/yii2-image-cutter/messages',
+            'basePath' => '@vendor/kilyakus/yii2-widget-cutter/messages',
             'fileMap' => [
                 'kilyakus/cutter/cutter' => 'cutter.php',
             ],

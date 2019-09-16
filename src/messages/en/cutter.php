@@ -21,5 +21,6 @@ return [
     'WIDTH' => 'Width',
     'HEIGHT' => 'Height',
     'DOWNLOAD' => 'Загрузить',
-    'Upload new photo' => 'Upload new photo'
+    'Upload new photo' => 'Upload new photo',
+    'DELETED' => 'Photo deleted',
 ];
