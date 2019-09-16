@@ -1,15 +1,12 @@
 <?php
-
 namespace kilyakus\cutter;
 
-/**
- * Class CutterAsset
- * @package kilyakus\cutter
- */
 class CutterAsset extends \yii\web\AssetBundle
 {
     public $depends = [
-        'yii\web\JqueryAsset'
+        'yii\web\JqueryAsset',
+        'kilyakus\switcher\SwitcherAsset',
+        'kilyakus\range\RangeAsset',
     ];
 
     public function init()
