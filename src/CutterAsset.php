@@ -5,6 +5,7 @@ class CutterAsset extends \yii\web\AssetBundle
 {
     public $depends = [
         'yii\web\JqueryAsset',
+        'kilyakus\font\FontAwesomeAsset',
         'kilyakus\toastr\ToastrAsset',
         'kilyakus\switcher\SwitcherAsset',
         'kilyakus\range\RangeAsset',
