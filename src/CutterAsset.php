@@ -5,6 +5,7 @@ class CutterAsset extends \yii\web\AssetBundle
 {
     public $depends = [
         'yii\web\JqueryAsset',
+        'kilyakus\toastr\ToastrAsset',
         'kilyakus\switcher\SwitcherAsset',
         'kilyakus\range\RangeAsset',
     ];
@@ -13,11 +14,11 @@ class CutterAsset extends \yii\web\AssetBundle
     {
         $this->sourcePath = __DIR__ . '/assets';
 
-        $this->js[] = (YII_DEBUG ? 'js/cropper.js' : 'js/cropper.min.js');
-        $this->js[] = (YII_DEBUG ? 'js/cutter.js' : 'js/cutter.min.js');
+        $this->js[] = 'js/cropper.js';
+        $this->js[] = 'js/cutter.js';
 
-        $this->css[] = (YII_DEBUG ? 'css/cropper.css' : 'css/cropper.min.css');
-        $this->css[] = (YII_DEBUG ? 'css/cutter.css' : 'css/cutter.min.css');
+        $this->css[] = 'css/cropper.css';
+        $this->css[] = 'css/cutter.css';
 
         parent::init();
     }

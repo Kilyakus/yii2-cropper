@@ -17,6 +17,7 @@
     "yiisoft/yii2": "*",
     "yiisoft/yii2-imagine": "*",
     "yurkinx/yii2-image": "*",
+    "kilyakus/yii2-toastr": "*",
     "kilyakus/yii2-switcher": "*",
     "kilyakus/yii2-widget-range": "*"
   },
