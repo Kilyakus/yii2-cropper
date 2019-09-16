@@ -136,7 +136,7 @@ class Cutter extends \yii\widgets\InputWidget
 
         echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'preview-container']);
 
-        echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'position-absolute btn-cutter']);
+        echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'position-absolute btn btn-cutter']);
 
         echo Html::img($this->model->{$this->attribute}, [
             'class' => 'preview-image img-responsive img-rounded',
@@ -156,7 +156,7 @@ class Cutter extends \yii\widgets\InputWidget
             // 'header' => Html::tag('h4', Yii::t('kilyakus/cutter/cutter', 'CUTTER')),
             'header' => '<h4 class="text-center">' . Yii::t('kilyakus/cutter/cutter','Upload new photo') . '</h4><p class="text-center text-gray">Вы можете загрузить изображение в формате JPG, GIF или PNG.</p>',
             'closeButton' => [],
-            'options' => ['class' => 'modal-dark'],
+            'options' => ['class' => 'modal-cutter'],
             'footer' => $this->getModalFooter($inputField),
             'size' => Modal::SIZE_LARGE,
         ]);
@@ -179,7 +179,7 @@ class Cutter extends \yii\widgets\InputWidget
         }else{
             echo Html::beginTag('div', ['class' => 'hidden']);
         }
-        echo Html::beginTag('div', ['class' => 'mb-15'.(isset($this->cropperOptions['aspectRatioHidden']) ? ' hidden' : '')]);
+        echo Html::beginTag('div', ['class' => 'form-group'.(isset($this->cropperOptions['aspectRatioHidden']) ? ' hidden' : '')]);
         echo Html::label(Yii::t('kilyakus/cutter/cutter', 'ASPECT_RATIO'), $inputField . '-aspectRatio');
         $resolutions = ['' => 'Responsive','16/9' => 'Full HD (16:9)','21/9' => 'Widescreen (21:9)','16/10' => 'Widescreen (16:10)','5/3' => 'Widescreen (5:3)','5/4' => 'Landscape (5:4)','4/3' => 'Landscape (4:3)','4/4' => 'Square (4:4)','12/16' => 'Vertical (12:16)'];
         echo Html::dropDownList(
@@ -194,7 +194,7 @@ class Cutter extends \yii\widgets\InputWidget
         // echo Html::textInput($this->attribute . '-aspectRatio', isset($this->cropperOptions['aspectRatio']) ? $this->cropperOptions['aspectRatio'] : 0, ['id' => $inputField . '-aspectRatio', 'class' => 'form-control']);
         echo Html::endTag('div');
 
-        echo Html::beginTag('div', ['class' => 'mb-15'.(isset($this->cropperOptions['rotateHidden']) ? ' hidden' : '')]);
+        echo Html::beginTag('div', ['class' => 'form-group'.(isset($this->cropperOptions['rotateHidden']) ? ' hidden' : '')]);
         echo Html::label(Yii::t('kilyakus/cutter/cutter', 'ANGLE'), $inputField . '-dataRotate');
         echo Html::input('range',$this->attribute . '-cropping[dataRotate]','',['id' => $inputField . '-dataRotate', 'class' => 'form-control','data-range-value' => 0,'data-range-min' => 0, 'data-range-max' => 360, 'data-range-step' => 1, 'min' => 0, 'max' => 360]);
         // echo Html::textInput($this->attribute . '-cropping[dataRotate]', '', ['id' => $inputField . '-dataRotate', 'class' => 'form-control']);
@@ -202,13 +202,13 @@ class Cutter extends \yii\widgets\InputWidget
 
         echo Html::beginTag('div', ['class' => 'row'.(isset($this->cropperOptions['positionsHidden']) ? ' hidden' : '')]);
             echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-6']);
-                echo Html::beginTag('div', ['class' => 'mb-15']);
+                echo Html::beginTag('div', ['class' => 'form-group']);
                     echo Html::label(Yii::t('kilyakus/cutter/cutter', 'POSITION') . ' (X)', $inputField . '-dataX');
                     echo Html::textInput($this->attribute . '-cropping[dataX]', '', ['id' => $inputField . '-dataX', 'class' => 'form-control']);
                 echo Html::endTag('div');
             echo Html::endTag('div');
             echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-6']);
-                echo Html::beginTag('div', ['class' => 'mb-15']);
+                echo Html::beginTag('div', ['class' => 'form-group']);
                     echo Html::label(Yii::t('kilyakus/cutter/cutter', 'POSITION') . ' (Y)', $inputField . '-dataY');
                     echo Html::textInput($this->attribute . '-cropping[dataY]', '', ['id' => $inputField . '-dataY', 'class' => 'form-control']);
                 echo Html::endTag('div');
