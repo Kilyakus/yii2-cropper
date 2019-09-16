@@ -38,4 +38,6 @@
 .modal-cutter .modal-body fieldset[disabled] .form-control {background-color:#252525;color:#555;}
 .has-success .modal-cutter .modal-body .form-control {border-color:#383838;box-shadow:0 0;}
 
-.btn.btn-cutter {border:1px solid rgba(255,255,255,0.6);background-color:rgba(255,255,255,0.2);}
+.btn.btn-cutter {transition:all 0.12s;background-color:rgba(255,255,255,0.2);color:#FFF;}
+.btn.btn-cutter:hover,
+.btn.btn-cutter:focus {background-color:rgba(255,255,255,0.8);color:#666;}
