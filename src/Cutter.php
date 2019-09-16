@@ -238,21 +238,39 @@ class Cutter extends \yii\widgets\InputWidget
         CutterAsset::register($view);
         
         $view->registerJs("
+            toastr.options = {
+                'closeButton': true,
+                'debug': false,
+                'newestOnTop': false,
+                'progressBar': true,
+                'positionClass': 'toast-bottom-right',
+                'preventDuplicates': false,
+                'onclick': null,
+                'showDuration': '300',
+                'hideDuration': '1000',
+                'timeOut': '5000',
+                'extendedTimeOut': '5000',
+                'showEasing': 'swing',
+                'hideEasing': 'linear',
+                'showMethod': 'fadeIn',
+                'hideMethod': 'fadeOut'
+            }
+            
             $('form[type=cropper] [id*=_button_accept],form[type=cropper] [name*=-remove]').on('click',function(){
                 var parent = $($(this).parents('form')).get(0);
                 $(parent).submit();
                 // if(!$(this).attr('name') &&  !== -1) {
                 if($(this).attr('name') && $(this).attr('name').indexOf('-remove') !== -1){
                     setTimeout(function(){
-                        toastr[success]('" . Yii::t('kilyakus/cutter/cutter', 'DELETED') . "');
+                        toastr['success']('" . Yii::t('kilyakus/cutter/cutter', 'DELETED') . "');
                     },0);
                 }else{
                     setTimeout(function(){
-                        toastr[success]('" . Yii::t('kilyakus/cutter/cutter', 'UPLOADING') . "');
+                        toastr['success']('" . Yii::t('kilyakus/cutter/cutter', 'UPLOADING') . "');
                     },0);
                 }
             })",
-        yii\web\View::POS_END);
+        yii\web\View::POS_END,'widget-cutter-toastr-'.$inputField);
 
         $view->registerJs('
             if($(document).find("input[type=range]").length != 0){
@@ -279,7 +297,7 @@ class Cutter extends \yii\widgets\InputWidget
 
         $options = Json::encode($options);
 
-        $view->registerJs('jQuery("#' . $inputField . '").cutter(' . $options . ');',$view::POS_READY);
+        $view->registerJs('jQuery("#' . $inputField . '").cutter(' . $options . ');',$view::POS_READY,'widget-cutter-'.$inputField);
 
         $view->registerCss('
             #'.$inputField.'-css.preview-container {max-width:'.$adaptedWidth.'px;max-height:'.$adaptedHeight.'px;}
