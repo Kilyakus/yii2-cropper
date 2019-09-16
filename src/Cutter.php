@@ -7,6 +7,42 @@ use yii\helpers\Json;
 use yii\bootstrap\Modal;
 use yii\bootstrap\ButtonGroup;
 
+
+/*
+    For model behaviors:
+
+    'image' => [
+        'class' => CutterBehavior::className(),
+        'attributes' => 'image',
+        'baseDir' => '/uploads/' . dirname . '/images',
+        'basePath' => '@webroot/uploads/' . dirname . '/images',
+    ]
+
+    Examples:
+
+    echo $form->field($model, 'image')->widget(Cutter::className(), [
+        'cropperOptions' => [
+            'aspectRatio' => '16/9',
+            'aspectRatioHidden' => true,
+            'positionsHidden' => true,
+            'sizeHidden' => true,
+            'rotateHidden' => true
+        ]
+    ])
+
+    Cutter::widget([
+        'model' => $model,
+        'name' => 'image',
+        'cropperOptions' => [
+            'aspectRatio' => '16/9',
+            'aspectRatioHidden' => true,
+            'positionsHidden' => true,
+            'sizeHidden' => true,
+            'rotateHidden' => true
+        ]
+    ])
+*/
+
 class Cutter extends \yii\widgets\InputWidget
 {
     public $imageOptions;
@@ -212,7 +248,7 @@ class Cutter extends \yii\widgets\InputWidget
                     },0);
                 }else{
                     setTimeout(function(){
-                        notify.success('" . Yii::t('easyii','Uploading. Please wait') . "');
+                        notify.success('" . Yii::t('kilyakus/cutter/cutter', 'UPLOADING') . "');
                     },0);
                 }
             })",
@@ -255,7 +291,7 @@ class Cutter extends \yii\widgets\InputWidget
         Yii::$app->i18n->translations['kilyakus/cutter/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
-            'basePath' => '@vendor/kilyakus/yii2-widget-cutter/messages',
+            'basePath' => '@vendor/kilyakus/yii2-widget-cutter/src/messages',
             'fileMap' => [
                 'kilyakus/cutter/cutter' => 'cutter.php',
             ],

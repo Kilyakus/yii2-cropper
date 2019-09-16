@@ -23,4 +23,5 @@ return [
     'DOWNLOAD' => 'Загрузить',
     'Upload new photo' => 'Upload new photo',
     'DELETED' => 'Photo deleted',
+    'UPLOADING' => 'Uploading. Please wait',
 ];
