@@ -244,11 +244,11 @@ class Cutter extends \yii\widgets\InputWidget
                 // if(!$(this).attr('name') &&  !== -1) {
                 if($(this).attr('name') && $(this).attr('name').indexOf('-remove') !== -1){
                     setTimeout(function(){
-                        notify.success('" . Yii::t('kilyakus/cutter/cutter', 'DELETED') . "');
+                        toastr[success]('" . Yii::t('kilyakus/cutter/cutter', 'DELETED') . "');
                     },0);
                 }else{
                     setTimeout(function(){
-                        notify.success('" . Yii::t('kilyakus/cutter/cutter', 'UPLOADING') . "');
+                        toastr[success]('" . Yii::t('kilyakus/cutter/cutter', 'UPLOADING') . "');
                     },0);
                 }
             })",
