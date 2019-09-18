@@ -89,7 +89,16 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
             }
 
             $croppingFile = $croppingFilePath . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt;
+
             if(!empty($uploadImage->tempName)) {
+
+                switch ($uploadImage->type) { 
+                    case "image/webp": 
+                        $temp = imagecreatefromwebp($uploadImage->tempName);
+                        $temp = imagejpeg($temp, $uploadImage->tempName, 100);
+                        break; 
+                }
+
                 $imageTmp = Image::getImagine()->open($uploadImage->tempName);
                 $imageTmp->rotate($cropping['dataRotate']);
 
@@ -105,7 +114,7 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
                 $image->crop($point, $box);
                 $image->save($croppingFile, ['quality' => $this->quality]);
 
-                $this->owner->{$attribute} = $croppingFileName;
+                $this->owner->{$attribute} = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
             }
         } elseif (isset($_POST[$attribute . '-remove']) && $_POST[$attribute . '-remove']) {
             $this->delete($attribute);
@@ -214,5 +223,4 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
             return $baseDir.'/'.$img.'_'.$size.'x'.$size.$expansion;
         }
     }
-
 }
