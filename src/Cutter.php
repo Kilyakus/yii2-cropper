@@ -270,7 +270,7 @@ class Cutter extends \yii\widgets\InputWidget
                     },0);
                 }
             })",
-        yii\web\View::POS_END,'widget-cutter-toastr-'.$inputField);
+        yii\web\View::POS_END,'widget-cutter-toastr');// -' . $inputField);
 
         $view->registerJs('
             if($(document).find("input[type=range]").length != 0){
