@@ -8,7 +8,7 @@ class CutterAsset extends \yii\web\AssetBundle
         'kilyakus\fontawesome\FontAwesomeAsset',
         'kilyakus\toastr\ToastrAsset',
         'kilyakus\switcher\SwitcherAsset',
-        'kilyakus\range\RangeAsset',
+        'kilyakus\widget\range\RangeAsset',
     ];
 
     public function init()
