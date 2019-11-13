@@ -5,7 +5,7 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\bootstrap\Modal;
-use yii\bootstrap\ButtonGroup;
+use kilyakus\web\widgets\ButtonGroup;
 
 
 /*
@@ -136,7 +136,10 @@ class Cutter extends \yii\widgets\InputWidget
 
         echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'preview-container']);
 
-        echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'position-absolute btn btn-cutter']);
+        echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'position-absolute']);
+            echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'btn btn-cutter']);
+            echo Html::tag('label', '<i class="fa fa-upload"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'btn btn-cutter']);
+        echo Html::endTag('div');
 
         echo Html::img($this->model->{$this->attribute}, [
             'class' => 'preview-image img-responsive img-rounded',
@@ -157,25 +160,28 @@ class Cutter extends \yii\widgets\InputWidget
             'header' => '<h4 class="text-center">' . Yii::t('kilyakus/cutter/cutter','Upload new photo') . '</h4><p class="text-center text-gray">Вы можете загрузить изображение в формате JPG, GIF или PNG.</p>',
             'closeButton' => [],
             'options' => ['class' => 'modal-cutter'],
-            'footer' => $this->getModalFooter($inputField),
+            'footer' => $this->getModalFooter(),
             'size' => Modal::SIZE_LARGE,
         ]);
 
-        echo Html::beginTag('div', ['class' => 'row h-align']);
+        echo Html::beginTag('div', ['class' => 'cropper-body']);
 
-        if($disableOptions){
-            echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-12']);
-        }else{
-            echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-8']);
-        }
+        // if($disableOptions){
+        //     echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-12']);
+        // }else{
+        //     echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-8']);
+        // }
 
-        echo Html::beginTag('div', ['class' => 'image-container']);
+
+        echo Html::beginTag('div', ['class' => 'cropper-container']);
+        echo Html::beginTag('div', ['class' => 'cropper-preview']);
         echo Html::img(null, $this->imageOptions);
         echo Html::endTag('div');
+        echo $this->getToolbar($inputField);
         echo Html::endTag('div');
 
         if(!$disableOptions){
-            echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-4']);
+            echo Html::beginTag('div', ['class' => 'cropper-properties']);
         }else{
             echo Html::beginTag('div', ['class' => 'hidden']);
         }
@@ -191,6 +197,7 @@ class Cutter extends \yii\widgets\InputWidget
                 'class' => 'form-control',
                 'data-target' => '#'.$inputField.'-aspectRatio'
         ]);
+
         // echo Html::textInput($this->attribute . '-aspectRatio', isset($this->cropperOptions['aspectRatio']) ? $this->cropperOptions['aspectRatio'] : 0, ['id' => $inputField . '-aspectRatio', 'class' => 'form-control']);
         echo Html::endTag('div');
 
@@ -204,13 +211,13 @@ class Cutter extends \yii\widgets\InputWidget
             echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-6']);
                 echo Html::beginTag('div', ['class' => 'form-group']);
                     echo Html::label(Yii::t('kilyakus/cutter/cutter', 'POSITION') . ' (X)', $inputField . '-dataX');
-                    echo Html::textInput($this->attribute . '-cropping[dataX]', '', ['id' => $inputField . '-dataX', 'class' => 'form-control']);
+                    echo Html::input('number', $this->attribute . '-cropping[dataX]', '', ['id' => $inputField . '-dataX', 'class' => 'form-control']);
                 echo Html::endTag('div');
             echo Html::endTag('div');
             echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-6']);
                 echo Html::beginTag('div', ['class' => 'form-group']);
                     echo Html::label(Yii::t('kilyakus/cutter/cutter', 'POSITION') . ' (Y)', $inputField . '-dataY');
-                    echo Html::textInput($this->attribute . '-cropping[dataY]', '', ['id' => $inputField . '-dataY', 'class' => 'form-control']);
+                    echo Html::input('number', $this->attribute . '-cropping[dataY]', '', ['id' => $inputField . '-dataY', 'class' => 'form-control']);
                 echo Html::endTag('div');
             echo Html::endTag('div');
         echo Html::endTag('div');
@@ -316,48 +323,47 @@ class Cutter extends \yii\widgets\InputWidget
         ];
     }
 
-    private function getModalFooter($inputField)
+    private function getToolbar($inputField)
     {
         return Html::beginTag('div', [
-            'class' => 'btn-toolbar pull-left'
+            'class' => 'btn-toolbar'
         ]) .
         ButtonGroup::widget([
             'encodeLabels' => false,
+            'vertical' => true,
             'buttons' => [
                 [
-                    'label' => '<i class="glyphicon glyphicon-move"></i>',
+                    'label' => '<i class="fa fa-arrows-alt"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'setDragMode',
                         'data-option' => 'move',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'DRAG_MODE_MOVE'),
                     ]
                 ],
                 [
-                    'label' => '<i class="glyphicon glyphicon-scissors"></i>',
+                    'label' => '<i class="fa fa-cut"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'setDragMode',
                         'data-option' => 'crop',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'data-title' => Yii::t('kilyakus/cutter/cutter', 'DRAG_MODE_CROP'),
                     ]
                 ],
             ],
-            'options' => [
-                'class' => 'pull-left'
-            ]
         ]) .
         ButtonGroup::widget([
             'encodeLabels' => false,
+            'vertical' => true,
             'buttons' => [
                 [
-                    'label' => '<i class="glyphicon glyphicon-ok"></i>',
+                    'label' => '<i class="fa fa-compress"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'crop',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'data-title' => Yii::t('kilyakus/cutter/cutter', 'CROP'),
                     ]
                 ],
@@ -366,105 +372,105 @@ class Cutter extends \yii\widgets\InputWidget
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'reset',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'REFRESH'),
                     ]
                 ],
                 [
-                    'label' => '<i class="glyphicon glyphicon-remove"></i>',
+                    'label' => '<i class="fa fa-expand"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'clear',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'REMOVE'),
                     ]
                 ],
             ],
-            'options' => [
-                'class' => 'pull-left'
-            ]
         ]) .
         ButtonGroup::widget([
             'encodeLabels' => false,
+            'vertical' => true,
             'buttons' => [
                 [
-                    'label' => '<i class="glyphicon glyphicon-zoom-in"></i>',
+                    'label' => '<i class="fa fa-search-plus"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'zoom',
                         'data-option' => '0.1',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'ZOOM_IN'),
                     ],
                     'visible' => $this->cropperOptions['zoomable']
                 ],
                 [
-                    'label' => '<i class="glyphicon glyphicon-zoom-out"></i>',
+                    'label' => '<i class="fa fa-search-minus"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'zoom',
                         'data-option' => '-0.1',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'ZOOM_OUT'),
                     ],
                     'visible' => $this->cropperOptions['zoomable']
                 ],
                 [
-                    'label' => '<i class="glyphicon glyphicon-share-alt  icon-flipped"></i>',
+                    'label' => '<i class="fa fa-redo icon-flipped"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'rotate',
-                        'data-option' => '45',
-                        'class' => 'btn btn-primary',
+                        'data-option' => '-45',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'ROTATE_LEFT'),
                     ],
                     'visible' => $this->cropperOptions['rotatable']
                 ],
                 [
-                    'label' => '<i class="glyphicon glyphicon-share-alt"></i>',
+                    'label' => '<i class="fa fa-redo"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'rotate',
-                        'data-option' => '-45',
-                        'class' => 'btn btn-primary',
+                        'data-option' => '45',
+                        'class' => 'btn btn-cutter',
                         'title' => Yii::t('kilyakus/cutter/cutter', 'ROTATE_RIGHT'),
                     ],
                     'visible' => $this->cropperOptions['rotatable']
                 ],
             ],
-            'options' => [
-                'class' => 'pull-left'
-            ]
         ]) .
-        ButtonGroup::widget([
-            'encodeLabels' => false,
-            'buttons' => [
-                [
-                    'label' => '<i class="glyphicon glyphicon-glyphicon glyphicon-resize-full"></i>',
-                    'options' => [
-                        'type' => 'button',
-                        'data-method' => 'setAspectRatio',
-                        'data-target' => '#' . $inputField . '-aspectRatio',
-                        'class' => 'btn btn-primary',
-                        'title' => Yii::t('kilyakus/cutter/cutter', 'SET_ASPECT_RATIO'),
-                    ]
-                ],
-                [
-                    'label' => '<i class="glyphicon glyphicon-upload"></i>',
-                    'options' => [
-                        'type' => 'button',
-                        'data-method' => 'setData',
-                        'class' => 'btn btn-primary',
-                        'title' => Yii::t('kilyakus/cutter/cutter', 'SET_DATA'),
-                    ]
-                ],
-            ],
-            'options' => [
-                'class' => 'pull-left hidden'
-            ]
-        ]) .
-        Html::endTag('div') .
-        Html::button(Yii::t('kilyakus/cutter/cutter', 'CANCEL'), [
+        // ButtonGroup::widget([
+        //     'encodeLabels' => false,
+        //     'vertical' => true,
+        //     'buttons' => [
+        //         [
+        //             'label' => '<i class="glyphicon glyphicon-glyphicon glyphicon-resize-full"></i>',
+        //             'options' => [
+        //                 'type' => 'button',
+        //                 'data-method' => 'setAspectRatio',
+        //                 'data-target' => '#' . $inputField . '-aspectRatio',
+        //                 'class' => 'btn btn-cutter',
+        //                 'title' => Yii::t('kilyakus/cutter/cutter', 'SET_ASPECT_RATIO'),
+        //             ]
+        //         ],
+        //         [
+        //             'label' => '<i class="glyphicon glyphicon-upload"></i>',
+        //             'options' => [
+        //                 'type' => 'button',
+        //                 'data-method' => 'setData',
+        //                 'class' => 'btn btn-cutter',
+        //                 'title' => Yii::t('kilyakus/cutter/cutter', 'SET_DATA'),
+        //             ]
+        //         ],
+        //     ],
+        //     'options' => [
+        //         'class' => 'hidden'
+        //     ]
+        // ]) .
+        Html::endTag('div');
+    }
+
+    private function getModalFooter()
+    {
+        return Html::button(Yii::t('kilyakus/cutter/cutter', 'CANCEL'), [
             'id' => $this->imageOptions['id'] . '_button_cancel', 'class' => 'btn btn-danger'
         ]) . Html::button(Yii::t('kilyakus/cutter/cutter', 'ACCEPT'), [
             'id' => $this->imageOptions['id'] . '_button_accept', 'class' => 'btn btn-primary'

@@ -32,11 +32,23 @@
 .modal-cutter .modal-content {border:0;}
 .modal-cutter .modal-body {background-color:#111;}
 .modal-cutter .modal-body label {color:#FFF;}
-.modal-cutter .modal-body .form-control {background-color:#252525;color:#FFF;}
+.modal-cutter .modal-body .form-control {background-color:#252525;border-color:#303030;color:#FFF;}
 .modal-cutter .modal-body .form-control[disabled],
 .modal-cutter .modal-body .form-control[readonly],
 .modal-cutter .modal-body fieldset[disabled] .form-control {background-color:#252525;color:#555;}
 .has-success .modal-cutter .modal-body .form-control {border-color:#383838;box-shadow:0 0;}
+
+.modal-cutter .btn-toolbar {display:flex;flex-direction:column;width:40px;margin-left:15px;}
+.modal-cutter .btn-toolbar .btn {width:40px;height:40px;padding:0;}
+.modal-cutter .btn-toolbar .btn i {padding-right:0;}
+.modal-cutter .btn-toolbar .btn-group-vertical:not(:last-child) {margin-bottom:15px;}
+
+@media(min-width:414px){
+    .modal-cutter .btn-toolbar {margin-left:0;margin-right:15px;}
+}
+
+.modal-cutter .btn-toolbar .btn-group-vertical > .btn:not(:first-child),
+.modal-cutter .btn-toolbar .btn-group-vertical > .btn-group:not(:first-child) > .btn {margin-top:0;border:0;}
 
 .btn.btn-cutter {transition:all 0.12s;background-color:rgba(255,255,255,0.2);color:#FFF;}
 .btn.btn-cutter:hover,

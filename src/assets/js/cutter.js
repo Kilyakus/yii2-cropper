@@ -9,7 +9,7 @@ jQuery.fn.cutter = function (options) {
 
     var $cutter = $('#' + $inputField + '-cutter');
     var $modal = $cutter.find('.modal');
-    var $imageContainer = $cutter.find('.image-container');
+    var $imageContainer = $cutter.find('.cropper-preview');
     var $imageID = $imageContainer.find('img').attr('id');
     var $previewPane = $cutter.find('.preview-pane');
     var $preview = $cutter.find('.preview-image');
@@ -92,7 +92,7 @@ jQuery.fn.cutter = function (options) {
         var data = $(this).data();
 
         var $modal = $(this).closest('.modal');
-        var $imageContainer = $modal.find('.image-container');
+        var $imageContainer = $modal.find('.cropper-preview');
         var $imageID = $imageContainer.find('img').attr('id');
 
         set(this,data.method);
