@@ -8,6 +8,7 @@ jQuery.fn.cutter = function (options) {
     var $useWindowHeight = options['useWindowHeight'];
 
     var $cutter = $('#' + $inputField + '-cutter');
+    var $change = $('#' + $inputField + '-edit');
     var $modal = $cutter.find('.modal');
     var $imageContainer = $cutter.find('.cropper-preview');
     var $imageID = $imageContainer.find('img').attr('id');
@@ -100,6 +101,12 @@ jQuery.fn.cutter = function (options) {
 
         return false;
     });
+
+    $change.on('click',function () {
+        var options = $.extend({}, $cropperOptions, $defaultCropperOptions);
+        $('#' + $imageID).cropper(options);
+        $modal.modal('show');
+    })
 
     // $uploadField.click(function (e) {
     //     console.log(oldFile);

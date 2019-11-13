@@ -99,27 +99,65 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
                         break; 
                 }
 
-                $imageTmp = Image::getImagine()->open($uploadImage->tempName);
-                $imageTmp->rotate($cropping['dataRotate']);
-
-                $palette = new RGB();
-                $color = $palette->color('fff', 0);
-
-                $image = Image::getImagine()->create($imageTmp->getSize(), $color);
-                $image->paste($imageTmp, new Point(0, 0));
-
-                $point = new Point($cropping['dataX'], $cropping['dataY']);
-                $box = new Box($cropping['dataWidth'], $cropping['dataHeight']);
-
-                $image->crop($point, $box);
-                $image->save($croppingFile, ['quality' => $this->quality]);
+                $this->crop($uploadImage->tempName, $cropping, $croppingFile);
 
                 $this->owner->{$attribute} = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
             }
         } elseif (isset($_POST[$attribute . '-remove']) && $_POST[$attribute . '-remove']) {
             $this->delete($attribute);
         } elseif (isset($this->owner->oldAttributes[$attribute])) {
-            $this->owner->{$attribute} = $this->owner->oldAttributes[$attribute];
+
+            if(($cropping = $_POST[$attribute . '-cropping']) && !empty($cropping['dataX'])){
+
+                $oldFile = $_SERVER['DOCUMENT_ROOT'] . $this->owner->oldAttributes[$attribute];
+
+                $pathInfo = pathinfo($oldFile);
+
+                $croppingFileName = md5($pathInfo['filename'] . $this->quality . Json::encode($cropping));
+                $croppingFileExt = '.' . $pathInfo['extension'];
+
+                $croppingFileBasePath = Yii::getAlias($this->basePath);
+
+                if (!is_dir($croppingFileBasePath)) {
+                    mkdir($croppingFileBasePath, 0755, true);
+                }
+                $croppingFilePath = Yii::getAlias($this->basePath);
+
+                if (!is_dir($croppingFilePath)) {
+                    mkdir($croppingFilePath, 0755, true);
+                }
+
+                $croppingFile = $croppingFilePath . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt;
+
+                $this->crop($oldFile, $cropping, $croppingFile);
+
+                $this->owner->{$attribute} = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
+
+            }else{
+
+                $this->owner->{$attribute} = $this->owner->oldAttributes[$attribute];
+
+            }
+        }
+    }
+
+    public function crop($uploadImage, $cropping, $croppingFile)
+    {
+        if($cropping['dataX'] !== '' && $cropping['dataY'] !== '' && $cropping['dataWidth'] !== '' && $cropping['dataHeight'] !== ''){
+            $imageTmp = Image::getImagine()->open($uploadImage);
+            $imageTmp->rotate($cropping['dataRotate']);
+
+            $palette = new RGB();
+            $color = $palette->color('fff', 0);
+
+            $image = Image::getImagine()->create($imageTmp->getSize(), $color);
+            $image->paste($imageTmp, new Point(0, 0));
+
+            $point = new Point($cropping['dataX'], $cropping['dataY']);
+            $box = new Box($cropping['dataWidth'], $cropping['dataHeight']);
+
+            $image->crop($point, $box);
+            $image->save($croppingFile, ['quality' => $this->quality]);
         }
     }
 

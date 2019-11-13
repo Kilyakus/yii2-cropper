@@ -2,6 +2,7 @@
 
 return [
     'REMOVE' => 'Remove',
+    'EDIT' => 'Edit',
     'CUTTER' => 'Cutter',
     'DRAG_MODE_MOVE' => 'Drag mode "move"',
     'DRAG_MODE_CROP' => 'Drag mode "crop"',

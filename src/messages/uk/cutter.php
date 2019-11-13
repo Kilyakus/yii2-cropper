@@ -3,6 +3,7 @@
 return [
     'REMOVE' => 'Видалити',
     'CUTTER' => 'Різак',
+    'EDIT' => 'Edit',
     'DRAG_MODE_MOVE' => 'Режим "переміщення"',
     'DRAG_MODE_CROP' => 'Режим "обрізка"',
     'CROP' => 'Обрізати',

@@ -125,19 +125,17 @@ class Cutter extends \yii\widgets\InputWidget
             $adaptedHeight = $initialSizeHeight;
         }
 
-        // echo Html::activeFileInput($this->model, $this->attribute, ['class' => 'hidden']); << original
-        // Тут костыль, обдумать. Нужно для вывода нескольких обрезчиков с одинаковым 'attribute' в разных формах
         $inputModel = (new \ReflectionClass($this->model))->getShortName() . '['.$this->attribute.']';
         echo Html::input('hidden',$inputModel);
-        echo Html::input('file',$inputModel,null,['id' => $inputField,'class' => 'hidden']);
-        // Конец костыля.
+        echo Html::input('file',$inputModel,null,['id' => $inputField, 'class' => 'hidden']);
+        echo Html::input('hidden', $this->attribute . '-edit', null);
 
         echo Html::beginTag('div', ['class' => 'preview-pane',]);
 
         echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'preview-container']);
 
         echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'position-absolute']);
-            echo Html::tag('label', '<i class="fa fa-folder-open"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'btn btn-cutter']);
+            echo Html::tag('label', '<i class="fa fa-edit"></i> ' . Yii::t('kilyakus/cutter/cutter', 'EDIT') . ' ...', ['id' => $inputField . '-edit', 'class' => 'btn btn-cutter']);
             echo Html::tag('label', '<i class="fa fa-upload"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'btn btn-cutter']);
         echo Html::endTag('div');
 
@@ -166,16 +164,9 @@ class Cutter extends \yii\widgets\InputWidget
 
         echo Html::beginTag('div', ['class' => 'cropper-body']);
 
-        // if($disableOptions){
-        //     echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-12']);
-        // }else{
-        //     echo Html::beginTag('div', ['class' => 'col-xs-12 col-md-8']);
-        // }
-
-
         echo Html::beginTag('div', ['class' => 'cropper-container']);
         echo Html::beginTag('div', ['class' => 'cropper-preview']);
-        echo Html::img(null, $this->imageOptions);
+        echo Html::img($this->model->{$this->attribute}, $this->imageOptions);
         echo Html::endTag('div');
         echo $this->getToolbar($inputField);
         echo Html::endTag('div');
@@ -266,7 +257,6 @@ class Cutter extends \yii\widgets\InputWidget
             $('form[type=cropper] [id*=_button_accept],form[type=cropper] [name*=-remove]').on('click',function(){
                 var parent = $($(this).parents('form')).get(0);
                 $(parent).submit();
-                // if(!$(this).attr('name') &&  !== -1) {
                 if($(this).attr('name') && $(this).attr('name').indexOf('-remove') !== -1){
                     setTimeout(function(){
                         toastr['success']('" . Yii::t('kilyakus/cutter/cutter', 'DELETED') . "');
@@ -359,7 +349,7 @@ class Cutter extends \yii\widgets\InputWidget
             'vertical' => true,
             'buttons' => [
                 [
-                    'label' => '<i class="fa fa-compress"></i>',
+                    'label' => '<i class="fa fa-vector-square"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'crop',
@@ -368,7 +358,7 @@ class Cutter extends \yii\widgets\InputWidget
                     ]
                 ],
                 [
-                    'label' => '<i class="glyphicon glyphicon-refresh"></i>',
+                    'label' => '<i class="fa fa-compress"></i>',
                     'options' => [
                         'type' => 'button',
                         'data-method' => 'reset',
