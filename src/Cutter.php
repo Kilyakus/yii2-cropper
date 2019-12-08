@@ -125,17 +125,20 @@ class Cutter extends \yii\widgets\InputWidget
             $adaptedHeight = $initialSizeHeight;
         }
 
-        $inputModel = (new \ReflectionClass($this->model))->getShortName() . '['.$this->attribute.']';
+        if($this->model){
+            $inputModel = (new \ReflectionClass($this->model))->getShortName() . '['.$this->attribute.']';
+        }
         echo Html::input('hidden',$inputModel);
         echo Html::input('file',$inputModel,null,['id' => $inputField, 'class' => 'hidden']);
+
         echo Html::input('hidden', $this->attribute . '-edit', null);
 
         echo Html::beginTag('div', ['class' => 'preview-pane',]);
 
         echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'preview-container']);
 
-        echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'position-absolute']);
-            echo Html::tag('label', '<i class="fa fa-edit"></i> ' . Yii::t('kilyakus/cutter/cutter', 'EDIT') . ' ...', ['id' => $inputField . '-edit', 'class' => 'btn btn-cutter']);
+        echo Html::beginTag('div', ['id' => $inputField.'-css','class' => 'btn-group position-absolute']);
+            echo Html::tag('label', '<i class="fa fa-edit"></i>', ['id' => $inputField . '-edit', 'class' => 'btn btn-cutter']);
             echo Html::tag('label', '<i class="fa fa-upload"></i> ' . Yii::t('kilyakus/cutter/cutter', 'DOWNLOAD') . ' ...', ['for' => $inputField, 'class' => 'btn btn-cutter']);
         echo Html::endTag('div');
 
