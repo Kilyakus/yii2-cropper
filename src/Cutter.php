@@ -430,34 +430,34 @@ class Cutter extends \yii\widgets\InputWidget
                 ],
             ],
         ]) .
-        // ButtonGroup::widget([
-        //     'encodeLabels' => false,
-        //     'vertical' => true,
-        //     'buttons' => [
-        //         [
-        //             'label' => '<i class="glyphicon glyphicon-glyphicon glyphicon-resize-full"></i>',
-        //             'options' => [
-        //                 'type' => 'button',
-        //                 'data-method' => 'setAspectRatio',
-        //                 'data-target' => '#' . $inputField . '-aspectRatio',
-        //                 'class' => 'btn btn-cutter',
-        //                 'title' => Yii::t('kilyakus/cutter/cutter', 'SET_ASPECT_RATIO'),
-        //             ]
-        //         ],
-        //         [
-        //             'label' => '<i class="glyphicon glyphicon-upload"></i>',
-        //             'options' => [
-        //                 'type' => 'button',
-        //                 'data-method' => 'setData',
-        //                 'class' => 'btn btn-cutter',
-        //                 'title' => Yii::t('kilyakus/cutter/cutter', 'SET_DATA'),
-        //             ]
-        //         ],
-        //     ],
-        //     'options' => [
-        //         'class' => 'hidden'
-        //     ]
-        // ]) .
+        ButtonGroup::widget([
+            'encodeLabels' => false,
+            'vertical' => true,
+            'buttons' => [
+                [
+                    'label' => '<i class="glyphicon glyphicon-glyphicon glyphicon-resize-full"></i>',
+                    'options' => [
+                        'type' => 'button',
+                        'data-method' => 'setAspectRatio',
+                        'data-target' => '#' . $inputField . '-aspectRatio',
+                        'class' => 'btn btn-cutter',
+                        'title' => Yii::t('kilyakus/cutter/cutter', 'SET_ASPECT_RATIO'),
+                    ]
+                ],
+                [
+                    'label' => '<i class="glyphicon glyphicon-upload"></i>',
+                    'options' => [
+                        'type' => 'button',
+                        'data-method' => 'setData',
+                        'class' => 'btn btn-cutter',
+                        'title' => Yii::t('kilyakus/cutter/cutter', 'SET_DATA'),
+                    ]
+                ],
+            ],
+            'options' => [
+                'class' => 'hidden'
+            ]
+        ]) .
         Html::endTag('div');
     }
 
