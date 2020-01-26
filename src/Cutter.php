@@ -7,7 +7,6 @@ use yii\helpers\Json;
 use yii\bootstrap\Modal;
 use kilyakus\web\widgets\ButtonGroup;
 
-
 /*
     For model behaviors:
 
