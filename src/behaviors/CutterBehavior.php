@@ -13,36 +13,16 @@ use yii\web\UploadedFile;
 use Imagine\Image\Palette\RGB;
 use Imagine\Image\Palette\Color\RGB as RGBColor;
 
-/**
- * Class CutterBehavior
- * @package kilyakus\cutter\behavior
- */
 class CutterBehavior extends \yii\behaviors\AttributeBehavior
 {
     public $expansion = '.png';
 
-    /**
-     * Attributes
-     * @var
-     */
     public $attributes;
 
-    /**
-     * Base directory
-     * @var
-     */
     public $baseDir;
 
-    /**
-     * Base path
-     * @var
-     */
     public $basePath;
 
-    /**
-     * Image cut quality
-     * @var int
-     */
     public $quality = 100;
 
     public function events()
@@ -101,7 +81,16 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
 
                 $this->crop($uploadImage->tempName, $cropping, $croppingFile);
 
-                $this->owner->{$attribute} = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
+                $src = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
+
+                list($width, $height) = getimagesize($uploadImage->tempName);
+                if($width > 1920){
+                    $maxWidth = 1920;
+                    $maxHeight = ($height/$width)*$maxWidth;
+                    Image::getImagine()->open($_SERVER['DOCUMENT_ROOT'] . $src)->thumbnail(new Box($maxWidth, $maxHeight))->save($_SERVER['DOCUMENT_ROOT'] . $src, ['quality' => 100]);
+                }
+
+                $this->owner->{$attribute} = $src;
             }
         } elseif (isset($_POST[$attribute . '-remove']) && $_POST[$attribute . '-remove']) {
             $this->delete($attribute);
@@ -181,10 +170,6 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
         }
     }
 
-    /**
-     * @brief Отдает оригинал загруженного изображения
-     * @return string
-     */
     public function getImgOrigin($attribute=false)
     {
         if(!is_array($this->attributes)) {
@@ -193,12 +178,6 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
         return $this->baseDir.'/'.$this->owner->$attribute.$this->expansion;
     }
 
-    /**
-     * @brief Отдает изображение под нужный размер
-     * @detailed смотри self::getImg()
-     * @param int $size
-     * @return bool|string
-     */
     public function getImg($size=500, $attribute=false)
     {
         if(!is_array($this->attributes)) {
@@ -207,13 +186,6 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
         return self::getImgUrl($this->owner->$attribute, $size);
     }
 
-    /**
-     * @brief Отдает изображение под нужный размер
-     * @detailed если изображения нет под нужный размер, генерирует его в реальном времени
-     * @param $img
-     * @param int $size
-     * @return bool|string
-     */
     public function getImgUrl($img, $size=500)
     {
         $image = $this->baseDir.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
@@ -233,16 +205,6 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
         }
     }
 
-    /**
-     * @brief Отдает изображение под нужный размер
-     * @detailed если изображения нет под нужный размер, генерирует его в реальном времени
-     * @param $basePath
-     * @param $baseDir
-     * @param $img
-     * @param int $size
-     * @param $expansion
-     * @return bool|string
-     */
     public static function getImageUrl($basePath, $baseDir, $img, $size=500, $expansion='.png')
     {
         $image = $baseDir.'/'.$img.'_'.$size.'x'.$size.$expansion;
