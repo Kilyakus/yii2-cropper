@@ -21,7 +21,7 @@ return [
     'POSITION' => 'Position',
     'WIDTH' => 'Width',
     'HEIGHT' => 'Height',
-    'DOWNLOAD' => 'Загрузить',
+    'DOWNLOAD' => 'Upload',
     'Upload new photo' => 'Upload new photo',
     'DELETED' => 'Photo deleted',
     'UPLOADING' => 'Uploading. Please wait',

@@ -1,0 +1,20 @@
+.controls-container {position:absolute;width:40px;height:40px;top:10px;right:10px;z-index:50;}
+
+.controls-toggler {position:absolute;display:block;width:40px;height:40px;z-index:2;opacity:0;cursor:pointer;}
+.controls-toggler + label {width:40px;height:40px;display:block;z-index:1;transition:transform 0.5s, top 0.5s;position:absolute;}
+.controls-toggler + label i {display:block;width:inherit;height:inherit;line-height:40px;color:rgba(255, 255, 255, 0.7);background:rgba(0, 0, 0, 0.6);border-radius:50%;text-align:center;text-decoration:none;font-size:20px;pointer-events:none;transition:0.2s;}
+.controls-toggler:hover + label i {box-shadow:0 0 0 2px rgba(255, 255, 255, 0.3);color:white;background:rgba(255, 255, 255, 0.3);font-size:22.22px;}
+.controls-toggler:checked + label {background:transparent;}
+.controls-toggler:checked ~ ul .controls-item {opacity:1;}
+.controls-toggler:checked ~ ul .controls-item:nth-child(1) {transform:rotate(0deg) translate(-55px);}
+.controls-toggler:checked ~ ul .controls-item:nth-child(2) {transform:rotate(-45deg) translateX(-55px);}
+.controls-toggler:checked ~ ul .controls-item:nth-child(3) {transform:rotate(-90deg) translateX(-55px);}
+.controls-toggler:checked ~ ul .controls-item .fa {pointer-events:auto;}
+
+.controls-item:nth-child(1) .fa {transform:rotate(0deg);}
+.controls-item:nth-child(2) .fa {transform:rotate(45deg);}
+.controls-item:nth-child(3) .fa {transform:rotate(90deg);}
+.controls-item {position:absolute;display:block;top:0;right:0;width:35px;height:35px;padding:0!important;background:transparent!important;border:0!important;opacity:0;transition:0.5s;}
+.controls-item > * {width:100%;height:100%;cursor:pointer;}
+.controls-item .fa {display:block;width:inherit;height:inherit;line-height:35px;color:rgba(255, 255, 255, 0.7);background:rgba(0, 0, 0, 0.6);border-radius:50%;text-align:center;text-decoration:none;font-size:15px;pointer-events:none;transition:0.2s;}
+.controls-item .fa:hover {box-shadow:0 0 0 2px rgba(255, 255, 255, 0.3);color:white;background:rgba(255, 255, 255, 0.3);font-size:22.22px;}

@@ -12,10 +12,11 @@ use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
 use Imagine\Image\Palette\RGB;
 use Imagine\Image\Palette\Color\RGB as RGBColor;
+use kilyakus\helper\media\Upload;
 
 class CutterBehavior extends \yii\behaviors\AttributeBehavior
 {
-    public $expansion = '.png';
+    public $expansion;
 
     public $attributes;
 
@@ -23,7 +24,7 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
 
     public $basePath;
 
-    public $quality = 100;
+    public $quality = 90;
 
     public function events()
     {
@@ -48,21 +49,53 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
 
     public function upload($attribute)
     {
+        $modelClass = (new \ReflectionClass($this->owner))->getShortName();
+
+        if(!$_POST[$modelClass][$attribute . '-cropping'])
+        {
+            return false;
+        }
+
+        $cropping = $_POST[$modelClass][$attribute . '-cropping'][$this->owner->primaryKey];
+
         if ($uploadImage = UploadedFile::getInstance($this->owner, $attribute) ) {
             if (!$this->owner->isNewRecord) {
                 $this->delete($attribute);
             }
-            $cropping = $_POST[$attribute . '-cropping'];
 
-            $croppingFileName = md5($uploadImage->name . $this->quality . Json::encode($cropping));
+            $pathInfo = pathinfo($uploadImage);
+
+            switch ($uploadImage->type) {
+                case 'image/jpeg':
+                    $this->expansion = '.jpg';
+                    break;
+                case 'image/png':
+                    $this->expansion = (Upload::getImageAlphaChannel($uploadImage->tempName) === false) ? '.jpg' : '.png';
+                    break;
+                case 'image/gif':
+                    $this->expansion = '.gif';
+                    break;
+            }
+
+            // $this->expansion = '.' . $pathInfo['extension'];
+
+            list($width, $height) = getimagesize($uploadImage->tempName);
+
+            if($width > 1920){
+                $height = round( $height / ( $width / 1920 ) );
+                $width = 1920;
+            }
+
+            // $croppingFileName = 'original_' . $width . 'x' . $height . '_' . md5($pathInfo['filename'] . $pathInfo['extension'] . (int)$width . (int)$height . $uploadImage->size);
+            $croppingFileName = mb_strstr(Upload::getFileName($uploadImage, true, $width, $height), '.', true);
             $croppingFileExt = $this->expansion;
 
-            $croppingFileBasePath = Yii::getAlias($this->basePath);
+            $croppingFileBasePath = Yii::getAlias($this->basePath . '/' . Yii::$app->user->identity->id);
 
             if (!is_dir($croppingFileBasePath)) {
                 mkdir($croppingFileBasePath, 0755, true);
             }
-            $croppingFilePath = Yii::getAlias($this->basePath);
+            $croppingFilePath = Yii::getAlias($this->basePath . '/' . Yii::$app->user->identity->id);
 
             if (!is_dir($croppingFilePath)) {
                 mkdir($croppingFilePath, 0755, true);
@@ -72,31 +105,30 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
 
             if(!empty($uploadImage->tempName)) {
 
-                switch ($uploadImage->type) { 
-                    case "image/webp": 
-                        $temp = imagecreatefromwebp($uploadImage->tempName);
-                        $temp = imagejpeg($temp, $uploadImage->tempName, 100);
-                        break; 
-                }
+                $src = str_replace('\\', '/', Yii::getAlias($this->baseDir . '/' . Yii::$app->user->identity->id) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
 
-                $this->crop($uploadImage->tempName, $cropping, $croppingFile);
+                if(!file_exists($croppingFile)){
 
-                $src = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
+                    switch ($uploadImage->type) { 
+                        case "image/webp": 
+                            $temp = imagecreatefromwebp($uploadImage->tempName);
+                            $temp = imagejpeg($temp, $uploadImage->tempName, $this->quality);
+                            break; 
+                    }
 
-                list($width, $height) = getimagesize($uploadImage->tempName);
-                if($width > 1920){
-                    $maxWidth = 1920;
-                    $maxHeight = ($height/$width)*$maxWidth;
-                    Image::getImagine()->open($_SERVER['DOCUMENT_ROOT'] . $src)->thumbnail(new Box($maxWidth, $maxHeight))->save($_SERVER['DOCUMENT_ROOT'] . $src, ['quality' => 100]);
+                    $this->crop($uploadImage->tempName, $cropping, $croppingFile);
+
+                    Image::getImagine()->open($_SERVER['DOCUMENT_ROOT'] . $src)->thumbnail(new Box((int)$width, (int)$height))->save($_SERVER['DOCUMENT_ROOT'] . $src, ['quality' => $this->quality]);
+
                 }
 
                 $this->owner->{$attribute} = $src;
             }
-        } elseif (isset($_POST[$attribute . '-remove']) && $_POST[$attribute . '-remove']) {
+        } elseif (isset($_POST[$modelClass][$attribute . '-remove']) && $_POST[$modelClass][$attribute . '-remove']) {
             $this->delete($attribute);
         } elseif (isset($this->owner->oldAttributes[$attribute])) {
 
-            if(($cropping = $_POST[$attribute . '-cropping']) && !empty($cropping['dataX'])){
+            if(!empty($cropping) && !empty($cropping['dataX'])){
 
                 $oldFile = $_SERVER['DOCUMENT_ROOT'] . $this->owner->oldAttributes[$attribute];
 
@@ -105,12 +137,12 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
                 $croppingFileName = md5($pathInfo['filename'] . $this->quality . Json::encode($cropping));
                 $croppingFileExt = '.' . $pathInfo['extension'];
 
-                $croppingFileBasePath = Yii::getAlias($this->basePath);
+                $croppingFileBasePath = Yii::getAlias($this->basePath . '/' . Yii::$app->user->identity->id);
 
                 if (!is_dir($croppingFileBasePath)) {
                     mkdir($croppingFileBasePath, 0755, true);
                 }
-                $croppingFilePath = Yii::getAlias($this->basePath);
+                $croppingFilePath = Yii::getAlias($this->basePath . '/' . Yii::$app->user->identity->id);
 
                 if (!is_dir($croppingFilePath)) {
                     mkdir($croppingFilePath, 0755, true);
@@ -120,7 +152,7 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
 
                 $this->crop($oldFile, $cropping, $croppingFile);
 
-                $this->owner->{$attribute} = str_replace('\\', '/', Yii::getAlias($this->baseDir) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
+                $this->owner->{$attribute} = str_replace('\\', '/', Yii::getAlias($this->baseDir . '/' . Yii::$app->user->identity->id) . DIRECTORY_SEPARATOR . $croppingFileName . $croppingFileExt);
 
             }else{
 
@@ -142,10 +174,26 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
             $image = Image::getImagine()->create($imageTmp->getSize(), $color);
             $image->paste($imageTmp, new Point(0, 0));
 
+            if(!empty($cropping['dataX']))
+            {
+                $cropping['dataX'] += 1;
+            }
+
+            if(!empty($cropping['dataY']))
+            {
+                $cropping['dataY'] += 1;
+            }
+
+            if(empty($cropping['dataWidth']) && empty($cropping['dataHeight'])){
+                list($tempWidth, $tempHeight) = getimagesize($uploadImage);
+                $cropping['dataWidth'] = $tempWidth;
+                $cropping['dataHeight'] = $tempHeight;
+            }
+
             $point = new Point($cropping['dataX'], $cropping['dataY']);
             $box = new Box($cropping['dataWidth'], $cropping['dataHeight']);
 
-            $image->crop($point, $box);
+            @$image->crop($point, $box);
             $image->save($croppingFile, ['quality' => $this->quality]);
         }
     }
@@ -165,7 +213,7 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
     {
         $name_image = $this->owner->oldAttributes[$attribute];
         if(!empty($name_image)) {
-            $mack = Yii::getAlias($this->basePath) . DIRECTORY_SEPARATOR . $name_image . '*';
+            $mack = Yii::getAlias($this->basePath . '/' . Yii::$app->user->identity->id) . DIRECTORY_SEPARATOR . $name_image . '*';
             @array_map("unlink", glob($mack));
         }
     }
@@ -175,7 +223,7 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
         if(!is_array($this->attributes)) {
             $attribute = $this->attributes;
         }
-        return $this->baseDir.'/'.$this->owner->$attribute.$this->expansion;
+        return $this->baseDir . '/' . Yii::$app->user->identity->id.'/'.$this->owner->$attribute.$this->expansion;
     }
 
     public function getImg($size=500, $attribute=false)
@@ -188,20 +236,20 @@ class CutterBehavior extends \yii\behaviors\AttributeBehavior
 
     public function getImgUrl($img, $size=500)
     {
-        $image = $this->baseDir.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
-        $image_path = $this->basePath.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
+        $image = $this->baseDir . '/' . Yii::$app->user->identity->id.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
+        $image_path = $this->basePath . '/' . Yii::$app->user->identity->id.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
         if(file_exists($image_path)) {
             return $image;
         } else {
-            $file = $this->basePath.'/'.$img.$this->expansion;
+            $file = $this->basePath . '/' . Yii::$app->user->identity->id.'/'.$img.$this->expansion;
             if(!file_exists($file)) {
                 return false;
             }
             $image = new ImageDriver(['driver' => 'GD']);
             $image = $image->load($file);
             $image->resize($size,$size);
-            $image->save($this->basePath.'/'.$img.'_'.$size.'x'.$size.$this->expansion, 100);
-            return $this->baseDir.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
+            $image->save($this->basePath . '/' . Yii::$app->user->identity->id.'/'.$img.'_'.$size.'x'.$size.$this->expansion, 100);
+            return $this->baseDir . '/' . Yii::$app->user->identity->id.'/'.$img.'_'.$size.'x'.$size.$this->expansion;
         }
     }
 

@@ -9,17 +9,18 @@ class CutterAsset extends \yii\web\AssetBundle
         'kilyakus\toastr\ToastrAsset',
         'kilyakus\switcher\SwitcherAsset',
         'kilyakus\widget\range\RangeAsset',
+        'kilyakus\cutter\ControlsAsset',
     ];
 
     public function init()
     {
-        $this->sourcePath = __DIR__ . '/assets';
+        $this->sourcePath = __DIR__ . '/assets/cutter';
 
-        $this->js[] = 'js/cropper.js';
-        $this->js[] = 'js/cutter.js';
+        $this->js[] = 'widget-cropper.js';
+        $this->js[] = 'widget-cutter.js';
 
-        $this->css[] = 'css/cropper.css';
-        $this->css[] = 'css/cutter.css';
+        $this->css[] = 'widget-cropper.css';
+        $this->css[] = 'widget-cutter.css';
 
         parent::init();
     }

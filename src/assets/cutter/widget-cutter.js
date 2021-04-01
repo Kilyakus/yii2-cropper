@@ -106,7 +106,7 @@ jQuery.fn.cutter = function (options) {
         var options = $.extend({}, $cropperOptions, $defaultCropperOptions);
         $('#' + $imageID).cropper(options);
         $modal.modal('show');
-    })
+    });
 
     // $uploadField.click(function (e) {
     //     console.log(oldFile);
@@ -189,9 +189,12 @@ jQuery.fn.cutter = function (options) {
     });
 
     function remove() {
-        $imageContainer.find(".cropper-container").remove();
+        // $imageContainer.find(".cropper-container").remove();
+        var imageField = $imageContainer.find('img').prop('outerHTML');
 
-        $('#' + $imageID).removeAttr("src").removeAttr("style").removeClass("cropper-hidden");
+        $imageContainer.html('').append(imageField);
+
+        $('#' + $imageID).removeClass("cropper-hidden").removeAttr("style");//.removeAttr("src");
     }
 
     function fileOnload(e) {
